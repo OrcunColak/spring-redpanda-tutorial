@@ -1,21 +1,21 @@
 package com.colak.springredpandatutorial.config;
 
-import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.KafkaAdmin;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Configuration
 public class KafkaAdminConfig {
 
-    @Value(value = "${spring.kafka.bootstrap-servers}")
-    private String bootstrapAddress;
+    @Autowired
+    public void configureTopic(KafkaAdmin kafkaAdmin) {
+        NewTopic newTopic = new NewTopic(Constants.TOPIC, Constants.NUM_PARTITIONS, Constants.REPLICATION_FACTOR);
+        kafkaAdmin.createOrModifyTopics(newTopic);
+    }
 
+    // Old way of creating KafkaAdmin and topics
+    /*
     @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> configs = new HashMap<>();
@@ -27,4 +27,5 @@ public class KafkaAdminConfig {
     public NewTopic initialTopic() {
         return new NewTopic(Constants.TOPIC, Constants.NUM_PARTITIONS,  Constants.REPLICATION_FACTOR);
     }
+     */
 }
